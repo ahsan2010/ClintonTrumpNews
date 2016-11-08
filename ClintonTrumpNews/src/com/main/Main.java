@@ -15,6 +15,15 @@ import javax.servlet.http.HttpServletResponse;
  */
 @WebServlet("/Main")
 public class Main extends HttpServlet {
+	
+	
+	
+	@Override
+	public void init() throws ServletException {
+		// TODO Auto-generated method stub
+		super.init();
+	}
+
 	private static final long serialVersionUID = 1L;
        
     /**

@@ -2,18 +2,15 @@ package com.crawler.cnn;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Set;
 import java.util.regex.Pattern;
 
-import javax.swing.text.AbstractDocument.Content;
-
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormatter;
-import org.joda.time.format.ISODateTimeFormat;
+import org.apache.log4j.Logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+
+import com.main.Properties;
 
 import edu.uci.ics.crawler4j.crawler.Page;
 import edu.uci.ics.crawler4j.crawler.WebCrawler;
@@ -26,8 +23,8 @@ public class MyCrawler extends WebCrawler {
 	
     private final static Pattern FILTERS = Pattern.compile(".*(\\.(css|js|gif|jpg"
                                                            + "|png|mp3|mp3|zip|gz))$");
-
-    public ArrayList<CNNPost> posts = new ArrayList<CNNPost>();
+	final static Logger logger = Logger.getLogger(MyCrawler.class);
+   
     //Only selected pages should be visited
     
 	@Override
@@ -61,6 +58,8 @@ public class MyCrawler extends WebCrawler {
 		//	String text = htmlParseData.getText();
 			String html = htmlParseData.getHtml();
 			extract(html);
+			logger.debug("Crawling the CNN Posts...");
+			System.out.println("Reading..");
 		}
 	}
     
@@ -80,26 +79,10 @@ public class MyCrawler extends WebCrawler {
 		}
 
 		String title = doc.select("meta[itemprop=headline]").attr("content");
-		String author = doc.select("meta[itemprop=author]").attr("content");
+		String authorName = doc.select("meta[itemprop=author]").attr("content");
 		String date = doc.select("meta[itemprop=dateCreated]").attr("content");
-
-		System.out.println(title);
-		System.out.println(author);
-		System.out.println(date);
-
-		for (String s : texts) {
-			System.out.println(s);
-		}
-
-		if (date != null && !date.trim().isEmpty()) {
-			try {
-				DateTimeFormatter formatter = ISODateTimeFormat.dateTimeNoMillis().withZoneUTC();
-				DateTime dt = DateTime.parse(date, formatter);
-
-			} catch (IllegalArgumentException e) {
-				e.printStackTrace();
-			}
-		}
+		
+		Controller.posts.add(new CNNPost(title, authorName, date, texts));
 
 	}
      

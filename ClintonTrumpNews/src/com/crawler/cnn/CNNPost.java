@@ -1,14 +1,17 @@
 package com.crawler.cnn;
 
-public class CNNPost {
+import java.io.Serializable;
+import java.util.ArrayList;
+
+public class CNNPost implements Serializable{
 
 	private String title;
-	private String body;
+	private ArrayList<String> body;
 	private String authorName;
 	private String date;
 	
 	
-	public CNNPost(String title, String authorName,String date, String body){
+	public CNNPost(String title, String authorName,String date, ArrayList<String> body){
 		this.title = title;
 		this.authorName = authorName;
 		this.date = date;
@@ -22,10 +25,10 @@ public class CNNPost {
 	public void setTitle(String title) {
 		this.title = title;
 	}
-	public String getBody() {
+	public ArrayList<String> getBody() {
 		return body;
 	}
-	public void setBody(String body) {
+	public void setBody(ArrayList<String> body) {
 		this.body = body;
 	}
 	public String getAuthorName() {
