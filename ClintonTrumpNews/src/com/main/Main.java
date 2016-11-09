@@ -2,7 +2,6 @@ package com.main;
 
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 
 import javax.servlet.RequestDispatcher;
@@ -14,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.crawler.cnn.CNNPost;
 import com.crawler.cnn.Controller;
+import com.topicmodel.TopicModel;
 
 /**
  * Servlet implementation class Main
@@ -24,16 +24,20 @@ public class Main extends HttpServlet {
 	public ArrayList<CNNPost> clintonPosts = new ArrayList<CNNPost>();
 	public ArrayList<CNNPost> trumpPosts = new ArrayList<CNNPost>();
 	
+	TopicModel tmodel;
+	Controller cl;
+	// Initializes the important resources
 	@Override
 	public void init() throws ServletException {
-		// TODO Auto-generated method stub
-		//super.init();
+		
 		try{
-			Controller cl = new Controller();
+			cl = new Controller();
 			cl.startCrawler();
 			cl.selectPosts();
 			clintonPosts = cl.getClintonPosts();
-			trumpPosts = cl.getTrumpPosts();			
+			trumpPosts = cl.getTrumpPosts();
+			tmodel = new TopicModel(cl.posts);
+			tmodel.generateTopicModel(false);
 			
 		}catch(Exception e){
 			e.printStackTrace();
@@ -56,13 +60,7 @@ public class Main extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		/*response.setContentType("text/html");
-		PrintWriter out = response.getWriter();
-		out.print("<html><body>");
-		out.print("<h3>Hello Servlet</h3>");
-		out.print("</body></html>");
-		*/
+		
 		request.setAttribute("clintonPosts", clintonPosts);
 		request.setAttribute("trumpPosts",trumpPosts);
 		String yourJSP = "/jsp/index.jsp";
@@ -84,7 +82,10 @@ public class Main extends HttpServlet {
 		String yourJSP = "/jsp/viewPost.jsp";
 		request.setAttribute("clintonPosts", clintonPosts);
 		request.setAttribute("trumpPosts",trumpPosts);
-	
+		request.setAttribute("posts",cl.posts);
+		request.setAttribute("trumpToPost", cl.trumpToPost);
+		request.setAttribute("clintonToPost", cl.clintonToPost);
+		request.setAttribute("topicModel", tmodel);
         RequestDispatcher rd = getServletContext().getRequestDispatcher(yourJSP);
         rd.forward(request, response);
 	}

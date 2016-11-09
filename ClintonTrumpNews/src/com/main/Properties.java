@@ -10,5 +10,12 @@ public class Properties {
 	public static int maximumCrawlingDepth = 2;
 	public static String stop_word_path = root+"/others/stopList.csv";
 	public static String save_posts_path = root+"/others/posts.ser";
+	public static String ldaModel = root + "/others/model.lda";
+	public static String ldaCorpusPath = root + "/others/cnn.corpus";
+	public static String ldaStopWord = root +"/others/en.txt";
+	public static int ldaNumIter = 200;
+	public static int ldaNumThread = 5;
+	public static int ldaNumTopic = 5;
+	
 	public final static Logger logger = Logger.getLogger("ClintonTrumpNews Logger");
 }

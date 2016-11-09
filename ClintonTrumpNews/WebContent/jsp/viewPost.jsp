@@ -15,6 +15,8 @@
 <body>
 <%@ page import="com.crawler.cnn.CNNPost"
 		 import ="java.util.ArrayList"
+		 import = "java.util.Map"
+		 import ="com.topicmodel.TopicModel"
  %>
  
  <%
@@ -50,6 +52,28 @@
     
     </div>
     <div class="col-sm-4" style="background-color:lavender;">.col-sm-8</div>
+    <div class = "list-group"> 
+    	<% 
+    		int pid = 0;
+    		if(choice == 1){
+    		Map<Integer,Integer> clintonToPost =(Map<Integer,Integer>)request.getAttribute("clintonToPost");
+    		pid = clintonToPost.get(id);
+    		}else if (choice == 2){
+    			Map<Integer,Integer> trumpToPost =(Map<Integer,Integer>)request.getAttribute("trumpToPost");
+        		pid = trumpToPost.get(id);
+    		}
+    		TopicModel tmodel = (TopicModel)request.getAttribute("topicModel");
+    		ArrayList<CNNPost> posts = (ArrayList<CNNPost>)request.getAttribute("posts");
+    		for(int t = 0 ; t < 5 ; t ++){
+    	%>
+    		<div>
+    			<p class = "bg-primary">Topic<%out.print(t);%> : </p>
+    			
+    		 </div>
+    	<%}%>
+    	 
+    	<div> Hello2 </div>
+    </div>
   </div>
 </div>
 	 

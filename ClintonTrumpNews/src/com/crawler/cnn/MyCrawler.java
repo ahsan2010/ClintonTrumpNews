@@ -63,6 +63,8 @@ public class MyCrawler extends WebCrawler {
 		}
 	}
     
+     // Here in this method, we are extracting information from the html content
+     
 	public void extract(String html) {
 
 		Document doc = Jsoup.parse(html);

@@ -1,8 +1,10 @@
 package com.crawler.cnn;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
@@ -13,7 +15,11 @@ import java.util.StringTokenizer;
 import org.apache.log4j.Logger;
 
 import com.main.Properties;
+import com.topicmodel.LdaModel;
+import com.topicmodel.TopicGeneration;
 
+import cc.mallet.topics.ParallelTopicModel;
+import cc.mallet.util.CommandOption.Set;
 import edu.uci.ics.crawler4j.crawler.CrawlConfig;
 import edu.uci.ics.crawler4j.crawler.CrawlController;
 import edu.uci.ics.crawler4j.fetcher.PageFetcher;
@@ -25,7 +31,11 @@ public class Controller {
 	public static ArrayList<CNNPost> posts = new ArrayList<CNNPost>();
 	public ArrayList<CNNPost> clintonPosts = new ArrayList<CNNPost>();
 	public ArrayList<CNNPost> trumpPosts = new ArrayList<CNNPost>();
+	public Map<Integer,Integer>clintonToPost = new HashMap<Integer,Integer>();
+	public Map<Integer,Integer>trumpToPost = new HashMap<Integer,Integer>();
+	
 	final static Logger logger = Logger.getLogger(Controller.class);
+	
 	
 	public Controller() {
 
@@ -65,11 +75,12 @@ public class Controller {
 	}
 	
 	
+	
 	public void selectPosts(){
 		System.out.println("----------------------------------------");
 		System.out.println("----------------------------------------");
-		for(CNNPost p : posts){
-			
+		for(int i = 0 ; i < posts.size(); i ++){
+			CNNPost p = posts.get(i);
 			String body = getPostBody(p.getBody());
 			String title = p.getTitle();
 			
@@ -87,12 +98,17 @@ public class Controller {
 			
 			if(clintonScore > trumpScore){
 				clintonPosts.add(p);
+				clintonToPost.put(clintonPosts.size()-1, i);
 			}
 			else if(trumpScore > clintonScore){
 				trumpPosts.add(p);
+				trumpToPost.put(trumpToPost.size()-1, i);
 			}else{
 				clintonPosts.add(p);
 				trumpPosts.add(p);
+				clintonToPost.put(clintonPosts.size()-1, i);
+				trumpToPost.put(trumpToPost.size()-1, i);
+
 			}
 			
 		}
@@ -152,9 +168,13 @@ public class Controller {
 			writeObject();
 		}
 		
+		
+		
+		
 		System.out.println("Crawling Finishes.");
 		
 	}
+	
 	
 	public void writeObject(){
         long start = System.currentTimeMillis();
@@ -194,9 +214,7 @@ public class Controller {
 
 	            System.out.println("[Loading Saved Posts: " + (end - start) + " ms]");
 	            System.out.println();
-	            
-	            
-	            
+	            	            	            
 	            for(CNNPost p : posts){
 	            	System.out.println(p.getTitle());
 	            }
@@ -211,6 +229,7 @@ public class Controller {
 		try{
 			cl.startCrawler();
 			cl.selectPosts();
+			//cl.generateTopicModel();
 			System.out.println("Finish");
 		}catch(Exception e){
 			e.printStackTrace();
