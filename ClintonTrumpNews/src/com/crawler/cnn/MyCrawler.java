@@ -75,9 +75,6 @@ public class MyCrawler extends WebCrawler {
 		while (it.hasNext()) {
 			Element c = it.next();
 			String temp = c.text();
-			if (!temp.trim().isEmpty() && !temp.contains("Loading weather data ...")) {
-				texts.add(temp);
-			}
 		}
 
 		String title = doc.select("meta[itemprop=headline]").attr("content");

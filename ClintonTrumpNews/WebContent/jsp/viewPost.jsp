@@ -17,6 +17,8 @@
 		 import ="java.util.ArrayList"
 		 import = "java.util.Map"
 		 import ="com.topicmodel.TopicModel"
+		 import = "java.math.RoundingMode"
+		 import = "java.text.DecimalFormat"
  %>
  
  <%
@@ -44,15 +46,17 @@
   <div class="text-left" style="font-size:24px"> <p class="text-primary"><%out.print(post.get(id).getTitle());%></p> </div>
    <div class="text-left" style="font-family: Monospace ; font-size:14px"> <p class="text-muted"><%out.print("Posted by <b>"+post.get(id).getAuthorName()+"</b> on " + post.get(id).getDate() ); %> </p> </div>
     <div class="row">
-    <div class="col-sm-8" style="background-color:lavenderblush;">
+    <div class="col-sm-7" style="background-color:lavenderblush;">
     <% for (String s : post.get(id).getBody()){ %>
                  <p class="text-justify"><% out.println(s);%></p>
     <%}%>
     
     
     </div>
-    <div class="col-sm-4" style="background-color:lavender;">.col-sm-8</div>
+    <div class="col-sm-5" style="background-color:lavender;"><b>Topic Analysis</b></div>
     <div class = "list-group"> 
+    	<div style = "white-space: pre;"> <p style="background-color:lavender;"> </p></div>
+    	<div> <p class = "bg-info"> <b>Topic Word</b></p></div>
     	<% 
     		int pid = 0;
     		if(choice == 1){
@@ -64,15 +68,49 @@
     		}
     		TopicModel tmodel = (TopicModel)request.getAttribute("topicModel");
     		ArrayList<CNNPost> posts = (ArrayList<CNNPost>)request.getAttribute("posts");
-    		for(int t = 0 ; t < 5 ; t ++){
+    		ArrayList<Integer>topTopic = (ArrayList<Integer>)tmodel.getTopTopic(pid);
+    		for(int j = 0 ; j < 5 ; j ++){
+    			int t = topTopic.get(j);
     	%>
     		<div>
-    			<p class = "bg-primary">Topic<%out.print(t);%> : </p>
+    			<p class = "bg-primary">Topic<%out.print(t);%> : 
+    			<% 
+    				
+    				ArrayList<String> words = tmodel.showTopic(pid, t);
+    				System.out.println(pid +" " + t + " " + words.size());
+    				for(int i = 0 ; i < 6 ; i ++ ){
+    					out.print(words.get(i));
+    					if(i < 5) out.print(",");
+    				}
+    			%>
+    			</p>
     			
     		 </div>
     	<%}%>
     	 
-    	<div> Hello2 </div>
+    	<div style = "white-space: pre;"> <p style="background-color:lavender;"> </p></div>
+    	<div> <p class = "bg-info"> <b>Topic Distribution</b></p></div>
+    	
+    			<% 
+    			DecimalFormat df = new DecimalFormat("#.####");
+    			df.setRoundingMode(RoundingMode.CEILING);
+    			double[] topicDistribution = tmodel.tModel.getModel().getTopicProbabilities(pid);
+    			for(int j = 0 ; j < 5 ; j ++){
+        			int t = topTopic.get(j);
+    			%>
+    			<div>
+    			<p class = "bg-primary">Topic<%out.print(t);%> : 
+    			<% 
+    				
+    					Double d = topicDistribution[t];
+    					out.print(df.format(d));
+    					
+    				
+    			%>
+    			</p>
+    			
+    		 </div>
+    	<%}%>
     </div>
   </div>
 </div>

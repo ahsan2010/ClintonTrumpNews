@@ -6,9 +6,15 @@ import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeSet;
+
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 import com.crawler.cnn.CNNPost;
 import com.crawler.cnn.Preprocessing;
@@ -21,7 +27,7 @@ import cc.mallet.types.IDSorter;
 
 
 public class TopicModel {
-	LdaModel tModel;
+	public LdaModel tModel;
 	 ArrayList<CNNPost> posts;
 	 Map<Integer, Integer> maxDocTopicId = null;
 	 
@@ -119,6 +125,40 @@ public class TopicModel {
 		return k;
 	}
 	
+	public ArrayList<Integer> getTopTopic(int id){
+		int k = -1;
+		ParallelTopicModel model = tModel.model;
+		int numTopics = model.getNumTopics();
+		double[] topicDistribution = model.getTopicProbabilities(id);
+		double maxi = -1;
+		int maxiTopic = -1;
+		class Score{
+			int topic;
+			double distr;
+			public Score(int topic,double distr){
+				this.topic = topic;
+				this.distr = distr;
+			}
+		}
+		ArrayList<Score> docScore = new ArrayList<Score>();
+		for (int topic = 0; topic < numTopics; topic++) {
+			docScore.add(new Score(topic,topicDistribution[topic]));
+		}
+		Collections.sort(docScore,new Comparator<Score>() {
+
+			@Override
+			public int compare(Score c1, Score c2) {
+				return Double.compare(c2.distr, c1.distr);
+			}
+		});
+		ArrayList<Integer> topTopic = new ArrayList<Integer>();
+		for(Score s : docScore){
+			topTopic.add(s.topic);
+		}
+		k = maxiTopic;
+		return topTopic;
+	}
+	
 	public double getTopicDistribution(ParallelTopicModel model, int id){
 		double distribution = -1;
 		int numTopics = model.getNumTopics();
@@ -196,9 +236,7 @@ public class TopicModel {
 	
 	public static void main ( String arg[] ){
 		
-		TopicModel model = new TopicModel();
-		model.readObject();
-		model.generateTopicModel(true);
+		
 	}
 
 }
