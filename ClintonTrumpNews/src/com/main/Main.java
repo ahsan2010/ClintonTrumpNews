@@ -35,10 +35,10 @@ public class Main extends HttpServlet {
 		// TODO Auto-generated method stub
 		super.init(config);
 		System.out.println("GOT");
-		String path = config.getServletContext().getRealPath("js");
-		path = path.substring(0, path.indexOf("js")-1);
-		Properties.setRoot(path);
-		Properties.updatePath();
+		//String path = config.getServletContext().getRealPath("js");
+		//path = path.substring(0, path.indexOf("js")-1);
+		//Properties.setRoot(path);
+		//Properties.updatePath();
 		try {
 			
 			
