@@ -58,7 +58,7 @@ public class MyCrawler extends WebCrawler {
 		//	String text = htmlParseData.getText();
 			String html = htmlParseData.getHtml();
 			extract(html);
-			logger.debug("Crawling the CNN Posts...");
+			//logger.debug("Crawling the CNN Posts...");
 			System.out.println("Reading..");
 		}
 	}

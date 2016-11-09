@@ -216,6 +216,14 @@ public class Controller {
 			e.printStackTrace();
 		}
 	}
+
+	public ArrayList<CNNPost> getClintonPosts() {
+		return clintonPosts;
+	}
+
+	public ArrayList<CNNPost> getTrumpPosts() {
+		return trumpPosts;
+	}
 	
 
 }

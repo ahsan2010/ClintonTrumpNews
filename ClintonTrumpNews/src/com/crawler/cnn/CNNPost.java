@@ -9,7 +9,8 @@ public class CNNPost implements Serializable{
 	private ArrayList<String> body;
 	private String authorName;
 	private String date;
-	
+	private int hilaryScore;
+	private int trumpScore;
 	
 	public CNNPost(String title, String authorName,String date, ArrayList<String> body){
 		this.title = title;
@@ -43,8 +44,28 @@ public class CNNPost implements Serializable{
 	public void setDate(String date) {
 		this.date = date;
 	}
-	
-	
+
+
+	public int getHilaryScore() {
+		return hilaryScore;
+	}
+
+
+	public void setHilaryScore(int hilaryScore) {
+		this.hilaryScore = hilaryScore;
+	}
+
+
+	public int getTrumpScore() {
+		return trumpScore;
+	}
+
+
+	public void setTrumpScore(int trumpScore) {
+		this.trumpScore = trumpScore;
+	}
+
+
 	
 	
 	
