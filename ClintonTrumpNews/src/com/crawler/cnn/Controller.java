@@ -8,11 +8,15 @@ import java.io.FileWriter;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
 
 import org.apache.log4j.Logger;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
 
 import com.main.Properties;
 import com.topicmodel.LdaModel;
@@ -51,7 +55,7 @@ public class Controller {
 		return sb.toString();
 		
 	}
-	
+	//Counting word frequency
 	public Map<String,Integer> countWord(String text){
 		int total = 0 ;
 		Map<String,Integer> wordFreq = new HashMap<String,Integer>();
@@ -75,8 +79,9 @@ public class Controller {
 	}
 	
 	
-	
+	//Selecting post for Clinton and Trump
 	public void selectPosts(){
+		
 		System.out.println("----------------------------------------");
 		System.out.println("----------------------------------------");
 		for(int i = 0 ; i < posts.size(); i ++){
@@ -152,6 +157,7 @@ public class Controller {
 		controller.addSeed("http://edition.cnn.com/politics");
 
 		// Start the crawler
+		
 		boolean exists = new File(Properties.save_posts_path).exists();
 		if(exists){
 			readObject();
@@ -165,16 +171,34 @@ public class Controller {
 
 			System.out.println("[Crawling CNNPosts: " + (end - start) + " ms]");
 			System.out.println();
+			//Writing the Object to File
 			writeObject();
 		}
 		
-		
-		
+		sortPostByDate();
 		
 		System.out.println("Crawling Finishes.");
 		
 	}
 	
+	public void sortPostByDate(){
+		Collections.sort(posts,new Comparator<CNNPost>() {
+
+			@Override
+			public int compare(CNNPost o1, CNNPost o2) {
+				String s1 = o1.getDate().replace('T',' ').replace('Z',' ').trim();
+				String s2 = o2.getDate().replace('T',' ').replace('Z',' ').trim();
+
+				DateTime d1 = DateTime.parse(s1,DateTimeFormat.forPattern("yyyy-mm-dd HH:mm:ss"));
+				DateTime d2 = DateTime.parse(s2,DateTimeFormat.forPattern("yyyy-mm-dd HH:mm:ss"));
+				
+				if(d1.isBefore(d2)) return 1;
+				else if (d1.isAfter(d2)) return -1;
+				return 0;
+			}
+		});
+		
+	}
 	
 	public void writeObject(){
         long start = System.currentTimeMillis();
@@ -214,12 +238,7 @@ public class Controller {
 
 	            System.out.println("[Loading Saved Posts: " + (end - start) + " ms]");
 	            System.out.println();
-	            	            	            
-	            for(CNNPost p : posts){
-	            	System.out.println(p.getTitle());
-	            }
-	            
-	            
+	            	            
 	        } catch (Exception ex) {
 	            ex.printStackTrace();
 	        }
@@ -229,6 +248,8 @@ public class Controller {
 		try{
 			cl.startCrawler();
 			cl.selectPosts();
+			System.out.println("Trump " + cl.trumpPosts.size());
+			System.out.println("Clinton " + cl.clintonPosts.size());
 			//cl.generateTopicModel();
 			System.out.println("Finish");
 		}catch(Exception e){

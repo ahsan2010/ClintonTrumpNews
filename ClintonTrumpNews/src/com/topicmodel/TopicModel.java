@@ -236,7 +236,47 @@ public class TopicModel {
 	
 	public static void main ( String arg[] ){
 		
+		/*
+		TopicModel model = new TopicModel();
+		model.readObject();
+		model.generateTopicModel(true);*/
 		
+		DateTime dateTime = new DateTime();
+		System.out.println(dateTime.toString());
+		System.out.println(dateTime.getDayOfMonth());
+		
+		DateTime d = DateTime.parse("2016/11/09",DateTimeFormat.forPattern("yyyy/mm/dd"));
+		System.out.println(d.toString());
+		DateTime lastWeek = new DateTime().minusDays(7);
+		System.out.println(lastWeek.toString());
+		String url = "http://edition.cnn.com/2016/11/07/politics";
+		String up = url.substring(23,url.indexOf("politics")-1);
+		String da = "2016-11-07T23:20:07Z".replace('T',' ').replace('Z',' ').trim();
+		DateTime date2 = DateTime.parse(da,DateTimeFormat.forPattern("yyyy-mm-dd HH:mm:ss"));
+		System.out.println(date2.toString());
+		System.out.println(date2.isBefore(lastWeek));
+		ArrayList<DateTime>temp = new ArrayList<DateTime>();
+		temp.add(date2);
+		temp.add(lastWeek);
+		temp.add(d);
+		for(DateTime dt : temp){
+			System.out.println(dt.toString());
+		}
+		
+		Collections.sort(temp, new Comparator<DateTime>() {
+
+			@Override
+			public int compare(DateTime o1, DateTime o2) {
+				
+				if(o1.isBefore(o2)) return 1;
+				else if (o1.isAfter(o2)) return -1;
+				return 0;
+			}
+		});
+		
+		for(DateTime dt : temp){
+			System.out.println(dt.toString());
+		}
 	}
 
 }

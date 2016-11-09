@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -27,10 +28,20 @@ public class Main extends HttpServlet {
 	TopicModel tmodel;
 	Controller cl;
 	// Initializes the important resources
+	
+
 	@Override
-	public void init() throws ServletException {
-		
-		try{
+	public void init(ServletConfig config) throws ServletException {
+		// TODO Auto-generated method stub
+		super.init(config);
+		System.out.println("GOT");
+		String path = config.getServletContext().getRealPath("js");
+		path = path.substring(0, path.indexOf("js")-1);
+		Properties.setRoot(path);
+		Properties.updatePath();
+		try {
+			
+			
 			cl = new Controller();
 			cl.startCrawler();
 			cl.selectPosts();
@@ -38,12 +49,14 @@ public class Main extends HttpServlet {
 			trumpPosts = cl.getTrumpPosts();
 			tmodel = new TopicModel(cl.posts);
 			tmodel.generateTopicModel(false);
-			
-		}catch(Exception e){
+
+			System.out.println("Successfully FInish");
+
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
-		
+
+		//super.init(config);
 	}
 
 	private static final long serialVersionUID = 1L;
@@ -65,6 +78,8 @@ public class Main extends HttpServlet {
 		request.setAttribute("trumpPosts",trumpPosts);
 		String yourJSP = "/jsp/index.jsp";
 
+		System.out.println(clintonPosts.size() +" " + trumpPosts.size());
+		
         RequestDispatcher rd = getServletContext().getRequestDispatcher(yourJSP);
         rd.forward(request, response);
 	}

@@ -5,6 +5,8 @@ import java.util.Iterator;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -49,17 +51,36 @@ public class MyCrawler extends WebCrawler {
      @Override
 	public void visit(Page page) {
 		String url = page.getWebURL().getURL();
-		if (!url.startsWith("http://edition.cnn.com/2016/11/07/politics")) {
-			return;
+		boolean flag  = false;
+		
+		for(int i = 0 ; i <= Properties.minThresholdDay ; i ++){
+			DateTime lastWeek = new DateTime().minusDays(i);
+			StringBuilder sb = new StringBuilder();
+			sb.append("http://edition.cnn.com/");
+			sb.append(lastWeek.getYear());
+			sb.append("/");
+			if(lastWeek.getMonthOfYear()<10){
+				sb.append("0");
+			}
+			sb.append(lastWeek.getMonthOfYear());
+			sb.append("/");
+			if(lastWeek.getDayOfMonth()<10){
+				sb.append(0);
+			}
+			sb.append(lastWeek.getDayOfMonth());
+			sb.append("/politics");
+			
+			if(url.startsWith(sb.toString())){
+				flag = true;
+			}
 		}
-
+		if(flag == false) return;
 		if (page.getParseData() instanceof HtmlParseData) {
 			HtmlParseData htmlParseData = (HtmlParseData) page.getParseData();
-		//	String text = htmlParseData.getText();
 			String html = htmlParseData.getHtml();
 			extract(html);
-			//logger.debug("Crawling the CNN Posts...");
-			System.out.println("Reading..");
+			
+			
 		}
 	}
     
@@ -69,17 +90,25 @@ public class MyCrawler extends WebCrawler {
 
 		Document doc = Jsoup.parse(html);
 
+		String title = doc.select("meta[itemprop=headline]").attr("content");
+		String authorName = doc.select("meta[itemprop=author]").attr("content");
+		String date = doc.select("meta[itemprop=dateCreated]").attr("content");
+		
+		String da = date.replace('T',' ').replace('Z',' ').trim();
+		DateTime date2 = DateTime.parse(da,DateTimeFormat.forPattern("yyyy-mm-dd HH:mm:ss"));
+		
+		//if(date2.isAfter(new DateTime().minusDays(Properties.minThresholdDay))) return;
+		
 		Elements contents = doc.select("[class=zn-body__paragraph]");
 		Iterator<Element> it = contents.iterator();
 		ArrayList<String> texts = new ArrayList<String>();
 		while (it.hasNext()) {
 			Element c = it.next();
 			String temp = c.text();
+			texts.add(temp);
 		}
-
-		String title = doc.select("meta[itemprop=headline]").attr("content");
-		String authorName = doc.select("meta[itemprop=author]").attr("content");
-		String date = doc.select("meta[itemprop=dateCreated]").attr("content");
+		System.out.println("Reading.. " + date2.toString() + " " + title);
+		
 		
 		Controller.posts.add(new CNNPost(title, authorName, date, texts));
 

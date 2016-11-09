@@ -34,6 +34,7 @@ $(document).ready(function(){
     		<% 
     			ArrayList<CNNPost> clintonPost = (ArrayList<CNNPost>)request.getAttribute("clintonPosts");
     			int size = clintonPost.size() > 25 ? 25 : clintonPost.size();
+    			
     			for(int i = 0 ; i < size ; i ++ ){
     				
     		%>
@@ -56,6 +57,7 @@ $(document).ready(function(){
     		<% 
     			ArrayList<CNNPost> trumpPost = (ArrayList<CNNPost>)request.getAttribute("trumpPosts");
     			int tsize = trumpPost.size() > 25 ? 25 : trumpPost.size();
+    			
     			for(int i = 0 ; i < tsize ; i ++ ){
     		%>
     		<form name=form method=post action="${pageContext.request.contextPath}/Welcome"  TARGET="_blank">
