@@ -25,8 +25,9 @@ $(document).ready(function(){
 		 import ="java.util.ArrayList"
  %>
 <div class="container-fluid">
-  <h1>Hello World!</h1>
-  <p>Resize the browser window to see the effect.</p>
+  <div class="text-center" style="font-family: Monospace ; font-size:28px"> <p class="text-warning">Clinton Vs Trump</p> </div>
+   <div class="text-center" style="font-family: Monospace ; font-size:16px"> <p class="text-warning">Lattest News Crawled from CNN</p> </div>
+  
   <div class="row" style="background-color:lavender;">
     <div class="col-sm-5 col-md-6" style="background-color:lavenderblush;">Hilary Clinton
     	<div class = "list-group">
@@ -38,7 +39,7 @@ $(document).ready(function(){
     		%>
     		  <form name=form method=post action="${pageContext.request.contextPath}/Welcome" TARGET="_blank">
     		<a href= "javascript:{openNewWindow();};" onclick="parentNode.submit();" class=list-group-item list-group-item-action" data-toggle="popover" data-trigger="hover" data-content=
-    		"<% out.print(clintonPost.get(i).getBody().get(0)); %>"
+    		"<% out.print(clintonPost.get(i).getBody().get(0)); %>" title="<%out.print("Posted by: "+clintonPost.get(i).getAuthorName()+"\n On "+ clintonPost.get(i).getDate()); %>"
     		>
     		<% out.println(clintonPost.get(i).getTitle()); %> 
     		</a>
@@ -59,7 +60,8 @@ $(document).ready(function(){
     		%>
     		<form name=form method=post action="${pageContext.request.contextPath}/Welcome"  TARGET="_blank">
     		<a href="javascript:;" onclick="parentNode.submit();"  class="list-group-item list-group-item-action" data-toggle="popover" data-trigger="hover" data-content=
-    		"<% out.print(trumpPost.get(i).getBody().get(0)); %>">
+    		"<% out.print(trumpPost.get(i).getBody().get(0)); %>"title="<%out.print("Posted by: "+trumpPost.get(i).getAuthorName()+"\n On "+ trumpPost.get(i).getDate()); %>"
+    		>
     		<% out.println(trumpPost.get(i).getTitle()); %> 
     		</a>
     		<input type=hidden value=<%out.print(i);%>  name="trumpPostId"></form>

@@ -4,40 +4,54 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Clinton Vs Trump</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <script src="js/bootstrap.min.js"></script>
 <title>Insert title here</title>
 </head>
 <body>
 <%@ page import="com.crawler.cnn.CNNPost"
 		 import ="java.util.ArrayList"
  %>
-	<div class="container">
-            <div class="row" style="background-color:cornsilk;">
-                <div class="col-xs-12" style="background-color:beige;"> <% 
-                int choice = 0;
-                int id = 0;
-                //out.println(id +" " + choice);
-                ArrayList<CNNPost> post = null;
-                
-                //out.println("Hello " + request.getAttribute("trumpPostId"));
-                
-                if(request.getAttribute("clintonPostId") != null ){
-                	choice = 1;
-                	post = (ArrayList<CNNPost>)request.getAttribute("clintonPosts"); 
-                	id = Integer.parseInt((String)request.getAttribute("clintonPostId"));
-                }else if (request.getAttribute("trumpPostId") != null){
-                	choice = 2;
-                	post = (ArrayList<CNNPost>)request.getAttribute("trumpPosts"); 
-                	id = Integer.parseInt((String)request.getAttribute("trumpPostId"));
-                }
-                
-                //out.println(id +" " + choice);
-                
-                %>
-                 <p class="text-center"><% out.println(post.get(id).getTitle());%></p>
-                </div>
-                 
-            </div>
-           
-</div>  
+ 
+ <%
+    	int choice = 0;
+    	int id = 0;
+    	//out.println(id +" " + choice);
+    	ArrayList<CNNPost> post = null;
+
+    	//out.println("Hello " + request.getAttribute("trumpPostId"));
+
+    	if (request.getAttribute("clintonPostId") != null) {
+    		choice = 1;
+    		post = (ArrayList<CNNPost>) request.getAttribute("clintonPosts");
+    		id = Integer.parseInt((String) request.getAttribute("clintonPostId"));
+    	} else if (request.getAttribute("trumpPostId") != null) {
+    		choice = 2;
+    		post = (ArrayList<CNNPost>) request.getAttribute("trumpPosts");
+    		id = Integer.parseInt((String) request.getAttribute("trumpPostId"));
+    	}
+
+    	//out.println(id +" " + choice);
+    %>
+ 
+<div class="container-fluid">
+  <div class="text-left" style="font-size:24px"> <p class="text-primary"><%out.print(post.get(id).getTitle());%></p> </div>
+   <div class="text-left" style="font-family: Monospace ; font-size:14px"> <p class="text-muted"><%out.print("Posted by <b>"+post.get(id).getAuthorName()+"</b> on " + post.get(id).getDate() ); %> </p> </div>
+    <div class="row">
+    <div class="col-sm-8" style="background-color:lavenderblush;">
+    <% for (String s : post.get(id).getBody()){ %>
+                 <p class="text-justify"><% out.println(s);%></p>
+    <%}%>
+    
+    
+    </div>
+    <div class="col-sm-4" style="background-color:lavender;">.col-sm-8</div>
+  </div>
+</div>
+	 
 </body>
 </html>
